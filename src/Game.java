@@ -3,6 +3,8 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
@@ -15,12 +17,29 @@ public class Game extends Canvas implements Runnable
 	private Thread thread;
 	private boolean running = false;
 	private BufferedImage image = new BufferedImage(W_WIDTH, W_HEIGHT, BufferedImage.TYPE_INT_RGB);
+	private BufferedImage spriteSheet = null;
+	
+	// TEST
+	private BufferedImage player;
 	
 	private void init()
 	{
 		setFocusable(true);
 		
-		// TODO: Init game here
+		// Init sprites
+		BufferedImageLoader loader = new BufferedImageLoader();
+		try 
+		{
+			// Sprites by Nicolás A. Ortega (Deathsbreed) https://opengameart.org/content/pong-graphics
+			spriteSheet = loader.loadImage("src/sprites.png");
+		} 
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
+		
+		SpriteSheet ss = new SpriteSheet(spriteSheet);
+		player = ss.grabImage(1, 1, 45, 135);
 	}
 	
 	private synchronized void start()
@@ -105,6 +124,7 @@ public class Game extends Canvas implements Runnable
 		 * Draw Stuff here!
 		 */
 		g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
+		g.drawImage(player, 20, W_HEIGHT /2 - 67, this);	// Paddle height is 135px
 		
 		g.dispose();
 		bs.show();
