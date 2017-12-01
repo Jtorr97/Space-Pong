@@ -1,6 +1,7 @@
 import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -10,17 +11,18 @@ import javax.swing.WindowConstants;
 
 public class Game extends Canvas implements Runnable 
 {
-	public static final int W_WIDTH = 800;
-	public static final int W_HEIGHT = 600;
+	public static final int W_WIDTH = 1280;
+	public static final int W_HEIGHT = 720;
 	public final String TITLE = "Space Pong (Alpha)";
 	
 	private Thread thread;
 	private boolean running = false;
+	
 	private BufferedImage image = new BufferedImage(W_WIDTH, W_HEIGHT, BufferedImage.TYPE_INT_RGB);
 	private BufferedImage spriteSheet = null;
+	private BufferedImage background = null;
 	
-	// TEST
-	private BufferedImage player;
+	private PlayerPaddle playerPaddle;
 	
 	private void init()
 	{
@@ -32,14 +34,18 @@ public class Game extends Canvas implements Runnable
 		{
 			// Sprites by Nicolás A. Ortega (Deathsbreed) https://opengameart.org/content/pong-graphics
 			spriteSheet = loader.loadImage("src/sprites.png");
+			background = loader.loadImage("src/bg.png");
 		} 
 		catch(IOException e)
 		{
 			e.printStackTrace();
 		}
 		
-		SpriteSheet ss = new SpriteSheet(spriteSheet);
-		player = ss.grabImage(1, 1, 45, 135);
+		// Add our keylistener
+		addKeyListener(new KeyInput(this));
+		
+		// Init game objects
+		playerPaddle = new PlayerPaddle(20, W_HEIGHT / 2 - 67, this);
 	}
 	
 	private synchronized void start()
@@ -124,15 +130,52 @@ public class Game extends Canvas implements Runnable
 		 * Draw Stuff here!
 		 */
 		g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
-		g.drawImage(player, 20, W_HEIGHT /2 - 67, this);	// Paddle height is 135px
+		g.drawImage(background, 0, 0, null);
+		playerPaddle.render(g);
 		
 		g.dispose();
 		bs.show();
 	}
 	
+	public void keyPressed(KeyEvent e)
+	{
+		int key = e.getKeyCode();
+		
+		switch (key)
+		{
+		case KeyEvent.VK_UP:
+			// Move the player paddle up
+            playerPaddle.setUpAcceleration(true);
+			break;
+			
+		case KeyEvent.VK_DOWN:
+			// Move the player paddle down
+            playerPaddle.setDownAcceleration(true);
+			break;
+		}
+	}
+	
+	public void keyReleased(KeyEvent e)
+	{
+		int key = e.getKeyCode();
+		
+		switch (key)
+		{
+		case KeyEvent.VK_UP:
+			// Move the player paddle up
+            playerPaddle.setUpAcceleration(false);
+			break;
+			
+		case KeyEvent.VK_DOWN:
+			// Move the player paddle down
+            playerPaddle.setDownAcceleration(false);
+			break;
+		}
+	}
+	
 	private void tick()
 	{
-		
+		playerPaddle.tick();
 	}
 	
 	// Driver
@@ -150,6 +193,11 @@ public class Game extends Canvas implements Runnable
 		frame.setVisible(true);
 		
 		game.start();
+	}
+	
+	public BufferedImage getSpriteSheet()
+	{
+		return spriteSheet;
 	}
 
 }
