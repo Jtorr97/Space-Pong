@@ -13,17 +13,15 @@ public class PlayerPaddle
 	private final int P_HEIGHT = 135;
 	private final double ACCELERATION = 2.5;
 	private final double P_MAX_SPEED = 10;
-	
-	private BufferedImage player;
+		
+	private Textures textures;
 	
 	// Default constructor
-	public PlayerPaddle(double x, double y, Game game)
+	public PlayerPaddle(double x, double y, Textures textures)
 	{
 		this.x = x;
 		this.y = y;
-		
-		SpriteSheet ss = new SpriteSheet(game.getSpriteSheet());
-		player = ss.grabImage(1, 1, P_WIDTH, P_HEIGHT);
+		this.textures = textures;
 	}
 	
 	public void tick()
@@ -60,7 +58,7 @@ public class PlayerPaddle
 	
 	public void render(Graphics g)
 	{
-		g.drawImage(player, (int)x, (int)y, null);
+		g.drawImage(textures.player, (int)x, (int)y, null);
 	}
 	
 	public int getPlayerPaddleHeight()

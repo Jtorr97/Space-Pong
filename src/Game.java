@@ -5,7 +5,6 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
@@ -21,6 +20,7 @@ public class Game extends Canvas implements Runnable
 	private BufferedImage image = new BufferedImage(W_WIDTH, W_HEIGHT, BufferedImage.TYPE_INT_RGB);
 	private BufferedImage spriteSheet = null;
 	private BufferedImage background = null;
+	private Textures textures;
 	
 	private PlayerPaddle playerPaddle;
 	
@@ -45,7 +45,8 @@ public class Game extends Canvas implements Runnable
 		addKeyListener(new KeyInput(this));
 		
 		// Init game objects
-		playerPaddle = new PlayerPaddle(20, W_HEIGHT / 2 - 67, this);
+		textures = new Textures(this);
+		playerPaddle = new PlayerPaddle(20, W_HEIGHT / 2 - 67, textures);
 	}
 	
 	private synchronized void start()
