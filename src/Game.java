@@ -23,6 +23,7 @@ public class Game extends Canvas implements Runnable
 	private Textures textures;
 	
 	private PlayerPaddle playerPaddle;
+	private Ball ball;
 	
 	private void init()
 	{
@@ -47,6 +48,7 @@ public class Game extends Canvas implements Runnable
 		// Init game objects
 		textures = new Textures(this);
 		playerPaddle = new PlayerPaddle(20, W_HEIGHT / 2 - 67, textures);
+		ball = new Ball(W_WIDTH / 2, W_HEIGHT / 2, textures);
 	}
 	
 	private synchronized void start()
@@ -133,6 +135,7 @@ public class Game extends Canvas implements Runnable
 		g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
 		g.drawImage(background, 0, 0, null);
 		playerPaddle.render(g);
+		ball.render(g);
 		
 		g.dispose();
 		bs.show();
@@ -177,6 +180,7 @@ public class Game extends Canvas implements Runnable
 	private void tick()
 	{
 		playerPaddle.tick();
+		ball.tick();
 	}
 	
 	// Driver
