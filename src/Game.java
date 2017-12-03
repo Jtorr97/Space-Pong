@@ -24,11 +24,12 @@ public class Game extends Canvas implements Runnable
 	
 	private PlayerPaddle playerPaddle;
 	private Ball ball;
+	private Computer computer;
+	private Score score;
 	
 	private void init()
 	{
-		setFocusable(true);
-		
+		requestFocus();
 		// Init sprites
 		BufferedImageLoader loader = new BufferedImageLoader();
 		try 
@@ -47,8 +48,11 @@ public class Game extends Canvas implements Runnable
 		
 		// Init game objects
 		textures = new Textures(this);
-		playerPaddle = new PlayerPaddle(20, W_HEIGHT / 2 - 67, textures);
-		ball = new Ball(W_WIDTH / 2, W_HEIGHT / 2, textures);
+		playerPaddle = new PlayerPaddle(20, W_HEIGHT / 2 - 75, textures);
+		ball = new Ball(W_WIDTH / 2 - 25, W_HEIGHT / 2 - 25, textures);
+		computer = new Computer(W_WIDTH - 50, W_HEIGHT / 2 - 75, textures, ball);
+		score = new Score();
+		
 	}
 	
 	private synchronized void start()
@@ -109,7 +113,7 @@ public class Game extends Canvas implements Runnable
             if(System.currentTimeMillis() - timer > 1000) 
             {
                 timer += 1000;
-                System.out.println(updates + " Ticks, FPS " + frames);
+                //System.out.println(updates + " Ticks, FPS " + frames);
                 updates = 0;
                 frames = 0;
             }
@@ -136,6 +140,8 @@ public class Game extends Canvas implements Runnable
 		g.drawImage(background, 0, 0, null);
 		playerPaddle.render(g);
 		ball.render(g);
+		computer.render(g);
+		score.render(g);
 		
 		g.dispose();
 		bs.show();
@@ -156,6 +162,9 @@ public class Game extends Canvas implements Runnable
 			// Move the player paddle down
             playerPaddle.setDownAcceleration(true);
 			break;
+			
+		case KeyEvent.VK_N:
+			ball = new Ball(W_WIDTH / 2, W_HEIGHT / 2, textures);
 		}
 	}
 	
@@ -181,6 +190,9 @@ public class Game extends Canvas implements Runnable
 	{
 		playerPaddle.tick();
 		ball.tick();
+		ball.checkCollision(playerPaddle, computer);
+		computer.tick();
+		score.tick();
 	}
 	
 	// Driver
