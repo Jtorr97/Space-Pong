@@ -48,7 +48,7 @@ public class Game extends Canvas implements Runnable
 		
 		// Init game objects
 		textures = new Textures(this);
-		playerPaddle = new PlayerPaddle(20, W_HEIGHT / 2 - 75, textures);
+		playerPaddle = new PlayerPaddle(0, W_HEIGHT / 2 - 75, textures);
 		ball = new Ball(W_WIDTH / 2 - 25, W_HEIGHT / 2 - 25, textures);
 		computer = new Computer(W_WIDTH - 50, W_HEIGHT / 2 - 75, textures, ball);
 		score = new Score();
@@ -113,7 +113,7 @@ public class Game extends Canvas implements Runnable
             if(System.currentTimeMillis() - timer > 1000) 
             {
                 timer += 1000;
-                //System.out.println(updates + " Ticks, FPS " + frames);
+                System.out.println(updates + " Ticks, FPS " + frames);
                 updates = 0;
                 frames = 0;
             }
