@@ -3,10 +3,16 @@ import java.awt.Graphics;
 public class Computer 
 {
 	private double x;
-	private double y;
+	private static double y;
 	private Ball ball;
 	
 	private Textures textures;
+	private boolean upAcceleration;
+	private double velocityY;
+	private double ACCELERATION = 2.5;
+	private boolean downAcceleration;
+	private double GRAVITY = 0.98;
+	private double P_MAX_SPEED = 10;
 	
 	Computer(double x, double y, Textures textures, Ball ball)
 	{
@@ -18,34 +24,64 @@ public class Computer
 	
 	public void tick()
 	{
+	
+		
 		if(ball.getX() < 640)
 		{
 			if(ball.getY() < y)
 			{
-				y -= 5;
+				upAcceleration = false;
+				downAcceleration = false;
 			}
 			else if(ball.getY() > y)
 			{
-				y += 5;
+				upAcceleration = false;
+				downAcceleration = false;
 			}
 		}
 		if(ball.getX() > 640)
 		{
 			if(ball.getY() < y)
 			{
-				y -= 9;
+				upAcceleration = true;
+				downAcceleration = false;
+
 			}
 			else if(ball.getY() > y)
 			{
-				y += 9;
+				downAcceleration = true;
+				upAcceleration = false;
 			}
 		}
+	
+		// Increment and decrement speed accordingly
+		if(upAcceleration)
+		{
+			velocityY -= ACCELERATION;
+		}
+		else if(downAcceleration)
+		{
+			velocityY += ACCELERATION;
+		}
+		else if(!upAcceleration && !downAcceleration)
+		{
+			velocityY *= GRAVITY;
+		}
 		
+		// Handle speed so paddle doesn't go too fast
+		if(velocityY >= P_MAX_SPEED)
+			velocityY = P_MAX_SPEED;
+		else if(velocityY <= -P_MAX_SPEED)
+			velocityY = -P_MAX_SPEED;
 		
+		// Handle bounds
 		if(y <= 0)
-			y = 0;
-		if(y >= 585)
-			y = 585;
+            y = 0;
+        if(y >= 585)
+            y = 585;
+        
+        // Update paddle velocity/position
+        y += velocityY;
 	}
 	
 	public void render(Graphics g)
@@ -58,7 +94,7 @@ public class Computer
 		return x;
 	}
 	
-	public double getY()
+	public static double getY()
 	{
 		return y;
 	}

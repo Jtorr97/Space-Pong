@@ -5,7 +5,7 @@ public class PlayerPaddle
 {
 	private static final double GRAVITY = 0.98;
 	private double x;
-	private double y;
+	private static double y;
 	private double velocityY;
 	private boolean upAcceleration = false;
 	private boolean downAcceleration = false;
@@ -71,7 +71,7 @@ public class PlayerPaddle
 		return P_WIDTH;
 	}
 	
-	public double getY()
+	public static double getY()
 	{
 		return y;
 	}
