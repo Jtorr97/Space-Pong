@@ -26,6 +26,16 @@ public class Game extends Canvas implements Runnable
 	private Ball ball;
 	private Computer computer;
 	private Score score;
+	private Menu menu;
+	
+	public static enum STATE
+	{
+		MENU,
+		GAME,
+		GAMEOVER
+	};
+	
+	public static STATE state = STATE.MENU;
 	
 	private void init()
 	{
@@ -35,8 +45,8 @@ public class Game extends Canvas implements Runnable
 		try 
 		{
 			// Sprites by Nicolás A. Ortega (Deathsbreed) https://opengameart.org/content/pong-graphics
-			spriteSheet = loader.loadImage("src/sprites.png");
-			background = loader.loadImage("src/bg.png");
+			spriteSheet = loader.loadImage("assets/sprites.png");
+			background = loader.loadImage("assets/bg.png");
 		} 
 		catch(IOException e)
 		{
@@ -44,7 +54,8 @@ public class Game extends Canvas implements Runnable
 		}
 		
 		// Add our keylistener
-		addKeyListener(new KeyInput(this));
+		this.addKeyListener(new KeyInput(this));
+		this.addMouseListener(new MouseInput());
 		
 		// Init game objects
 		textures = new Textures(this);
@@ -52,6 +63,7 @@ public class Game extends Canvas implements Runnable
 		ball = new Ball(W_WIDTH / 2 - 25, W_HEIGHT / 2 - 25, textures);
 		computer = new Computer(W_WIDTH - 50, W_HEIGHT / 2 - 75, textures, ball);
 		score = new Score();
+		menu = new Menu();
 		
 	}
 	
@@ -113,7 +125,7 @@ public class Game extends Canvas implements Runnable
             if(System.currentTimeMillis() - timer > 1000) 
             {
                 timer += 1000;
-                System.out.println(updates + " Ticks, FPS " + frames);
+                //System.out.println(updates + " Ticks, FPS " + frames);
                 updates = 0;
                 frames = 0;
             }
@@ -133,15 +145,21 @@ public class Game extends Canvas implements Runnable
 		
 		Graphics g = bs.getDrawGraphics();
 		
-		/*
-		 * Draw Stuff here!
-		 */
+		//////////////////////////////////////////////////////////////
 		g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
 		g.drawImage(background, 0, 0, null);
-		playerPaddle.render(g);
-		ball.render(g);
-		computer.render(g);
-		score.render(g);
+		if(state == STATE.GAME)
+		{
+			playerPaddle.render(g);
+			ball.render(g);
+			computer.render(g);
+			score.render(g);
+		}	
+		else if(state == STATE.MENU)
+		{
+			menu.render(g);
+		}
+		/////////////////////////////////////////////////////////////
 		
 		g.dispose();
 		bs.show();
@@ -151,20 +169,24 @@ public class Game extends Canvas implements Runnable
 	{
 		int key = e.getKeyCode();
 		
-		switch (key)
+		if(state == STATE.GAME)
 		{
-		case KeyEvent.VK_UP:
-			// Move the player paddle up
-            playerPaddle.setUpAcceleration(true);
-			break;
-			
-		case KeyEvent.VK_DOWN:
-			// Move the player paddle down
-            playerPaddle.setDownAcceleration(true);
-			break;
-			
-		case KeyEvent.VK_N:
-			ball = new Ball(W_WIDTH / 2, W_HEIGHT / 2, textures);
+			switch (key)
+			{
+			case KeyEvent.VK_W:
+				// Move the player paddle up
+	            playerPaddle.setUpAcceleration(true);
+				break;
+				
+			case KeyEvent.VK_S:
+				// Move the player paddle down
+	            playerPaddle.setDownAcceleration(true);
+				break;
+	
+			case KeyEvent.VK_ESCAPE:
+				state = STATE.MENU;
+				break;
+			}
 		}
 	}
 	
@@ -172,27 +194,32 @@ public class Game extends Canvas implements Runnable
 	{
 		int key = e.getKeyCode();
 		
-		switch (key)
+		if(state == STATE.GAME)
 		{
-		case KeyEvent.VK_UP:
-			// Move the player paddle up
-            playerPaddle.setUpAcceleration(false);
-			break;
-			
-		case KeyEvent.VK_DOWN:
-			// Move the player paddle down
-            playerPaddle.setDownAcceleration(false);
-			break;
+			switch (key)
+			{
+			case KeyEvent.VK_W:
+				// Move the player paddle up
+	            playerPaddle.setUpAcceleration(false);
+				break;
+				
+			case KeyEvent.VK_S:
+				// Move the player paddle down
+	            playerPaddle.setDownAcceleration(false);
+				break;
+			}
 		}
 	}
 	
 	private void tick()
 	{
-		playerPaddle.tick();
-		ball.tick();
-		ball.checkCollision(playerPaddle, computer);
-		computer.tick();
-		score.tick();
+		if(state == STATE.GAME)
+		{
+			playerPaddle.tick();
+			ball.tick();
+			computer.tick();
+			score.tick();
+		}
 	}
 	
 	// Driver
