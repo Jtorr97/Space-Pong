@@ -2,6 +2,7 @@ import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -40,6 +41,7 @@ public class Game extends Canvas implements Runnable
 	private void init()
 	{
 		requestFocus();
+		
 		// Init sprites
 		BufferedImageLoader loader = new BufferedImageLoader();
 		try 
@@ -55,14 +57,14 @@ public class Game extends Canvas implements Runnable
 		
 		// Add our keylistener
 		this.addKeyListener(new KeyInput(this));
-		this.addMouseListener(new MouseInput());
+		this.addMouseListener(new MouseInput(this));
 		
 		// Init game objects
 		textures = new Textures(this);
 		playerPaddle = new PlayerPaddle(0, W_HEIGHT / 2 - 75, textures);
 		ball = new Ball(W_WIDTH / 2 - 25, W_HEIGHT / 2 - 25, textures);
 		computer = new Computer(W_WIDTH - 50, W_HEIGHT / 2 - 75, textures, ball);
-		score = new Score();
+		score = new Score(0, 0);
 		menu = new Menu();
 		
 	}
@@ -125,7 +127,7 @@ public class Game extends Canvas implements Runnable
             if(System.currentTimeMillis() - timer > 1000) 
             {
                 timer += 1000;
-                //System.out.println(updates + " Ticks, FPS " + frames);
+                System.out.println(updates + " Ticks, FPS " + frames);
                 updates = 0;
                 frames = 0;
             }
@@ -185,11 +187,59 @@ public class Game extends Canvas implements Runnable
 	
 			case KeyEvent.VK_ESCAPE:
 				state = STATE.MENU;
+				resetGame();
 				break;
 			}
 		}
 	}
 	
+	private void resetGame() 
+	{
+		playerPaddle = new PlayerPaddle(0, W_HEIGHT / 2 - 75, textures);
+		ball = new Ball(W_WIDTH / 2 - 25, W_HEIGHT / 2 - 25, textures);
+		computer = new Computer(W_WIDTH - 50, W_HEIGHT / 2 - 75, textures, ball);
+		score = new Score(0, 0);
+	}
+	
+	public void mousePressed(MouseEvent e)
+	{
+		int mx = e.getX();
+		int my = e.getY();
+		
+		// Play button
+		if(mx >= Game.W_WIDTH / 2 - 100 && mx <= Game.W_WIDTH / 2 + 200)
+		{
+			
+			if(my >= 300 && my <= 350)
+			{
+				// Pressed play button
+				Game.state = Game.STATE.GAME;
+			}
+		}
+
+		// About button
+		if(mx >= Game.W_WIDTH / 2 - 100 && mx <= Game.W_WIDTH / 2 + 200)
+		{
+			
+			if(my >= 400 && my <= 450)
+			{
+				// TODO: Make about screen
+				// Inform about the making of this project and the controls
+			}
+		}
+		
+		// Quit button
+		if(mx >= Game.W_WIDTH / 2 - 100 && mx <= Game.W_WIDTH / 2 + 200)
+		{
+			
+			if(my >= 500 && my <= 550)
+			{
+				// Pressed quit button
+				System.exit(1);
+			}
+		}
+	}
+
 	public void keyReleased(KeyEvent e)
 	{
 		int key = e.getKeyCode();

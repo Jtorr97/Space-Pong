@@ -24,36 +24,18 @@ public class Computer
 	
 	public void tick()
 	{
-	
-		
-		if(ball.getX() < 640)
+		if(ball.getY() < y)
 		{
-			if(ball.getY() < y)
-			{
-				upAcceleration = false;
-				downAcceleration = false;
-			}
-			else if(ball.getY() > y)
-			{
-				upAcceleration = false;
-				downAcceleration = false;
-			}
-		}
-		if(ball.getX() > 640)
-		{
-			if(ball.getY() < y)
-			{
-				upAcceleration = true;
-				downAcceleration = false;
+			upAcceleration = true;
+			downAcceleration = false;
 
-			}
-			else if(ball.getY() > y)
-			{
-				downAcceleration = true;
-				upAcceleration = false;
-			}
 		}
-	
+		else if(ball.getY() > y)
+		{
+			downAcceleration = true;
+			upAcceleration = false;
+		}
+		
 		// Increment and decrement speed accordingly
 		if(upAcceleration)
 		{

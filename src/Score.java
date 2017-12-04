@@ -6,14 +6,14 @@ import java.awt.Graphics2D;
 
 public class Score 
 {
-	private double x;
-	private double y;
 	private static int compScore = 0;
 	private static int playerScore = 0;
 	private static int MAX_SCORE = 10;
 		
-	public Score()
+	public Score(int compScore, int playerScore)
 	{
+		this.compScore = compScore;
+		this.playerScore = playerScore;
 	}
 	
 	public void updateScore()
