@@ -1,10 +1,13 @@
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
+import java.util.Random;
 
 public class Ball 
 {
 	private double x;
 	private double y;
-	private double velocityX = -12.5;
+	private double velocityX = -13.5;
 	private double velocityY = 10;
 	
 	private Textures textures;
@@ -22,6 +25,26 @@ public class Ball
 		this.x = x;
 		this.y = y;
 		this.textures = textures;
+	}
+	
+	public int getRandomSpeed()
+	{
+		Random rand = new Random();
+		int rng = rand.nextInt(6) + 7;
+		return rng;
+	}
+	
+	public int getRandomDirection()
+	{
+		int rand = (int)(Math.random() * 2);
+        if(rand == 1)
+        {
+           return 1;
+        }
+        else
+        {
+            return -1;
+        }
 	}
 	
 	public void tick()
@@ -53,6 +76,7 @@ public class Ball
 			if(this.y >= player1.getY() && y <= player1.getY() + 150)
 			{
 				this.velocityX = -velocityX;
+				this.velocityY = getRandomSpeed() * getRandomDirection();
 			}
 		}
 		// Check if ball collides with right paddle
@@ -61,6 +85,7 @@ public class Ball
 			if(this.y >= comp.getY() && this.y <= comp.getY() + 150)
 			{
 				this.velocityX = -velocityX;
+				this.velocityY = getRandomSpeed() * getRandomDirection();
 			}
 		}
 	}
