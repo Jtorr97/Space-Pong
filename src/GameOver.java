@@ -10,8 +10,8 @@ import java.io.IOException;
 
 public class GameOver
 {
-	public Rectangle playAgainButton = new Rectangle(Game.W_WIDTH / 2 - 100, 300, 250, 50);
-	public Rectangle quitToMenuButton = new Rectangle(Game.W_WIDTH / 2 - 100, 400, 250, 50);
+	public Rectangle playAgainButton = new Rectangle(Game.W_WIDTH / 2 - 275, 300, 250, 50);
+	public Rectangle quitToMenuButton = new Rectangle(Game.W_WIDTH / 2 + 50, 300, 250, 50);
 	private Score score;
 	
 	public GameOver(Score score)

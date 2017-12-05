@@ -3,6 +3,7 @@ import java.io.IOException;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
@@ -12,14 +13,6 @@ public enum Sound
 	PLAYER_SCORED("assets/playerscored.wav"),
 	WALL_HIT("assets/wallhit.wav"),
 	PADDLE_HIT("assets/paddlehit.wav");
-	
-	// Nested class for specifying volume
-	public static enum Volume
-	{
-		MUTE, LOW, MEDIUM, HIGH
-	}
-	
-	public static Volume volume = Volume.LOW;
 	   
 	// Each sound effect has its own clip, loaded with its own sound file.
 	private Clip clip;
@@ -39,19 +32,15 @@ public enum Sound
 	        
 	        // Open audio clip and load samples from the audio input stream.
 	        clip.open(audioInputStream);
+	        
+	        FloatControl gainControl =
+                    (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+            gainControl.setValue(-10.0f); // Reduce volume by 10 decibels.
 		}
-		catch (UnsupportedAudioFileException e)
-	    {
-			e.printStackTrace();
-	    } 
-	    catch (IOException e) 
-	    {
-	        e.printStackTrace();
-	    } 
-	    catch (LineUnavailableException e)
+		catch (UnsupportedAudioFileException | IOException | LineUnavailableException e)
 		{
-	        e.printStackTrace();
-	    }
+            e.printStackTrace();
+        }
 	}
 	
 	// Play or Re-play the sound effect from the beginning, by rewinding.
