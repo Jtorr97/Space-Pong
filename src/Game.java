@@ -46,7 +46,7 @@ public class Game extends Canvas implements Runnable
 		BufferedImageLoader loader = new BufferedImageLoader();
 		try 
 		{
-			// Sprites by Nicolás A. Ortega (Deathsbreed) https://opengameart.org/content/pong-graphics
+			// Sprites by Nicolï¿½s A. Ortega (Deathsbreed) https://opengameart.org/content/pong-graphics
 			spriteSheet = loader.loadImage("assets/sprites.png");
 			background = loader.loadImage("assets/bg.png");
 		} 
@@ -275,18 +275,7 @@ public class Game extends Canvas implements Runnable
 	// Driver
 	public static void main(String[] args) 
 	{
-		Game game = new Game();
-		game.setPreferredSize(new Dimension(W_WIDTH, W_HEIGHT));
-		
-		JFrame frame = new JFrame(game.TITLE);
-		frame.add(game);
-		frame.pack();
-		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		frame.setResizable(false);
-		frame.setLocationRelativeTo(null);
-		frame.setVisible(true);
-		
-		game.start();
+		new Window(W_WIDTH, W_HEIGHT, TITLE, new Game());
 	}
 	
 	public BufferedImage getSpriteSheet()
