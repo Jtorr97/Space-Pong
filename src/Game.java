@@ -28,12 +28,14 @@ public class Game extends Canvas implements Runnable
 	private Computer computer;
 	private Score score;
 	private Menu menu;
+	private Settings settings;
 	private GameOver gameOver;
 	
 	public static enum STATE
 	{
 		MENU,
 		GAME,
+		SETTINGS,
 		GAMEOVER
 	};
 	
@@ -67,6 +69,7 @@ public class Game extends Canvas implements Runnable
 		computer = new Computer(W_WIDTH - 50, W_HEIGHT / 2 - 75, textures, ball);
 		score = new Score(0, 0);
 		menu = new Menu();
+		settings = new Settings();
 		gameOver = new GameOver(score);
 	}
 	
@@ -163,6 +166,10 @@ public class Game extends Canvas implements Runnable
 		{
 			menu.render(g);
 		}
+		else if(state == STATE.SETTINGS)
+		{
+			settings.render(g);
+		}
 		else if(state == STATE.GAMEOVER)
 		{
 			gameOver.render(g);
@@ -199,6 +206,15 @@ public class Game extends Canvas implements Runnable
 				break;
 			}
 		}
+		if(state == STATE.SETTINGS)
+		{
+			switch (key)
+			{
+			case KeyEvent.VK_ESCAPE:
+				state = STATE.MENU;
+				break;
+			}
+		}
 	}
 	
 	private void resetGame() 
@@ -216,8 +232,8 @@ public class Game extends Canvas implements Runnable
 		
 		if(state == STATE.GAMEOVER)
 		{
-			// Play button
-			if(mx >= Game.W_WIDTH / 2 - 100 && mx <= Game.W_WIDTH / 2 + 200)
+			// Play again button
+			if(mx >= (Game.W_WIDTH / 2) - 275 && mx <= Game.W_WIDTH / 2 - 25)
 			{	
 				if(my >= 300 && my <= 350)
 				{
@@ -228,10 +244,10 @@ public class Game extends Canvas implements Runnable
 			}
 
 			// Quit button
-			if(mx >= Game.W_WIDTH / 2 - 100 && mx <= Game.W_WIDTH / 2 + 200)
+			if(mx >= Game.W_WIDTH / 2 + 50 && mx <= Game.W_WIDTH / 2 + 300)
 			{
 							
-				if(my >= 400 && my <= 450)
+				if(my >= 300 && my <= 350)
 				{
 					state = STATE.MENU;
 					Music.GAME_THEME.stop();
@@ -263,8 +279,7 @@ public class Game extends Canvas implements Runnable
 				
 				if(my >= 400 && my <= 450)
 				{
-					// TODO: Make about screen
-					// Inform about the making of this project and the controls
+					state = STATE.SETTINGS;
 				}
 			}
 			
@@ -279,6 +294,26 @@ public class Game extends Canvas implements Runnable
 				}
 			}
 		}	
+		if(state == STATE.SETTINGS)
+		{
+			// Decrease the max score
+			if(mx >= 50 && mx <= 100)
+			{
+				if(my >= 100 && my <= 150)
+				{
+					Score.MAX_SCORE -= 1;
+				}
+			}
+			// Increase the max score
+			if(mx >= 450 && mx <= 500)
+			{
+				if(my >= 100 && my <= 150)
+				{
+					Score.MAX_SCORE += 1;
+				}
+			}
+			System.out.println(mx + " " + my);
+		}
 	}
 
 	public void keyReleased(KeyEvent e)

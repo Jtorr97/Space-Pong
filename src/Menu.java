@@ -10,7 +10,6 @@ import java.io.IOException;
 
 public class Menu 
 {
-	//public Rectangle playButton = new Rectangle(Game.W_WIDTH / 2 + 120, 150, 100, 50);
 	public Rectangle playButton = new Rectangle(Game.W_WIDTH / 2 - 100, 300, 200, 50);
 	public Rectangle aboutButton = new Rectangle(Game.W_WIDTH / 2 - 100, 400, 200, 50);
 	public Rectangle quitButton = new Rectangle(Game.W_WIDTH / 2 - 100, 500, 200, 50);
@@ -55,7 +54,7 @@ public class Menu
         g2d.draw(playButton);
         g.drawString("Play", playButton.x + 60, playButton.y + 35);
         g2d.draw(aboutButton);
-        g.drawString("About", aboutButton.x + 60, aboutButton.y + 35);
+        g.drawString("Settings", aboutButton.x + 30, aboutButton.y + 35);
         g2d.draw(quitButton);
         g.drawString("Quit", quitButton.x + 60, quitButton.y + 35);
 	}
