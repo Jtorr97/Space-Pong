@@ -2,7 +2,7 @@ import java.awt.Graphics;
 
 public class Computer 
 {
-	private double x;
+	private static double x;
 	private static double y;
 	private Ball ball;
 	
@@ -24,13 +24,13 @@ public class Computer
 	
 	public void tick()
 	{
-		if(ball.getY() < y)
+		if(ball.getY() < y + 75)
 		{
 			upAcceleration = true;
 			downAcceleration = false;
 
 		}
-		else if(ball.getY() > y)
+		else if(ball.getY() > y + 75)
 		{
 			downAcceleration = true;
 			upAcceleration = false;
@@ -71,7 +71,7 @@ public class Computer
 		g.drawImage(textures.computer, (int)x, (int)y, null);
 	}
 	
-	public double getX()
+	public static double getX()
 	{
 		return x;
 	}
