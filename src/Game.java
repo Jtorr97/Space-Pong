@@ -47,7 +47,7 @@ public class Game extends Canvas implements Runnable
 		BufferedImageLoader loader = new BufferedImageLoader();
 		try 
 		{
-			// Sprites by Nicolï¿½s A. Ortega (Deathsbreed) https://opengameart.org/content/pong-graphics
+			// Sprites by Nicolás A. Ortega (Deathsbreed) https://opengameart.org/content/pong-graphics
 			spriteSheet = loader.loadImage("assets/sprites.png");
 			background = loader.loadImage("assets/bg.png");
 		} 

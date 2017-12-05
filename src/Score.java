@@ -8,7 +8,7 @@ public class Score
 {
 	private static int compScore = 0;
 	private static int playerScore = 0;
-	private static int MAX_SCORE = 10;
+	public static int MAX_SCORE = 10;
 		
 	public Score(int compScore, int playerScore)
 	{
@@ -21,24 +21,21 @@ public class Score
 		if(Ball.out_of_bounds == Ball.OUT_OF_BOUNDS.WEST)
 		{
 			compScore += 1;
+			Sound.COMPUTER_SCORED.play();
 		}
 		if(Ball.out_of_bounds == Ball.OUT_OF_BOUNDS.EAST)
 		{
 			playerScore += 1;
+			Sound.PLAYER_SCORED.play();
 		}
 		Ball.out_of_bounds = null;
 	}
 	
 	public void checkScore()
 	{
-		// TODO: Implement game over screens and game states
-		if(playerScore == MAX_SCORE)
+		if(playerScore == MAX_SCORE || compScore == MAX_SCORE)
 		{
-			System.out.println("PLAYER WINS!");
-		}
-		if(compScore == MAX_SCORE)
-		{
-			System.out.println("COMPUTER WINS!");
+			Game.state = Game.STATE.GAMEOVER;
 		}
 	}
 	
@@ -64,5 +61,15 @@ public class Score
             g2d.setStroke(new BasicStroke(5));
             g2d.drawLine(1280 / 2, i, 1280 /2, i);
         }
+	}
+
+	public int getPlayerScore() 
+	{
+		return playerScore;
+	}
+
+	public int getComputerScore() 
+	{
+		return compScore;
 	}
 }

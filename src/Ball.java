@@ -1,5 +1,3 @@
-import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.util.Random;
 
@@ -69,6 +67,7 @@ public class Ball
 		{
 			if(this.y >= PlayerPaddle.getY() && y <= PlayerPaddle.getY() + 150)
 			{
+				Sound.PADDLE_HIT.play();
 				this.velocityX = -velocityX;
 				this.velocityY = getRandomSpeed() * getRandomDirection();
 			}
@@ -78,6 +77,7 @@ public class Ball
 		{
 			if(this.y >= Computer.getY() && this.y <= Computer.getY() + 150)
 			{
+				Sound.PADDLE_HIT.play();
 				this.velocityX = -velocityX;
 				this.velocityY = getRandomSpeed() * getRandomDirection();
 			}
@@ -90,10 +90,12 @@ public class Ball
 		if(y < 0)
 		{
 			velocityY = -velocityY;
+			Sound.WALL_HIT.play();
 		}
 		if(y > Game.W_HEIGHT - 50)
 		{
 			velocityY = -velocityY;
+			Sound.WALL_HIT.play();
 		}
 			
 		// Check if ball goes out of the field
