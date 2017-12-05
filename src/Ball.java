@@ -5,8 +5,8 @@ public class Ball
 {
 	private double x;
 	private double y;
-	private double velocityX = 13.5;
-	private double velocityY = -10;
+	private double velocityX = 15;
+	private double velocityY = -2;
 	
 	private Textures textures;
 	
@@ -63,17 +63,17 @@ public class Ball
 	public void checkCollision()
 	{
 		// Check if ball collides with left paddle
-		if(this.x <= 20)
+		if(this.x <= PlayerPaddle.getX())
 		{
 			if(this.y >= PlayerPaddle.getY() && y <= PlayerPaddle.getY() + 150)
 			{
 				Sound.PADDLE_HIT.play();
-				this.velocityX = -velocityX;
+				this.velocityX = -velocityX; 
 				this.velocityY = getRandomSpeed() * getRandomDirection();
 			}
 		}
 		// Check if ball collides with right paddle
-		if(this.x >= Game.W_WIDTH - 50)
+		if(this.x >= Computer.getX())
 		{
 			if(this.y >= Computer.getY() && this.y <= Computer.getY() + 150)
 			{
@@ -99,18 +99,21 @@ public class Ball
 		}
 			
 		// Check if ball goes out of the field
-		if(this.x < -50)
+		if(this.x < 0)
 		{
 			out_of_bounds = OUT_OF_BOUNDS.WEST;
 			this.x = Game.W_WIDTH / 2 - 25; 
 			this.y = Game.W_HEIGHT / 2 - 25;
 			this.velocityX = -velocityX;
+			this.velocityY = 2;
 		}
-		else if(this.x > Game.W_WIDTH + 50)
+		else if(this.x > Game.W_WIDTH)
 		{
 			out_of_bounds = OUT_OF_BOUNDS.EAST;
 			this.x = Game.W_WIDTH / 2 - 25; 
 			this.y = Game.W_HEIGHT / 2 - 25;
+			this.velocityX = -velocityX;
+			this.velocityY = 2;
 		}
 	}
 
