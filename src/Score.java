@@ -49,19 +49,27 @@ public class Score
 	
 	public void render(Graphics g)
 	{
+        Graphics2D g2d = (Graphics2D) g;
+
 		// Scoreboard
 		g.setFont(fonts.getFont2().deriveFont(125f));
         g.setColor(Color.WHITE);
         g.drawString("You: " + String.valueOf(playerScore), Game.W_WIDTH / 2 - Game.W_HEIGHT / 2, 75);
-        g.drawString("Computer: " + String.valueOf(compScore), Game.W_WIDTH / 2 + Game.W_HEIGHT / 4, 75);
+        g.drawString("Computer: " + String.valueOf(compScore), Game.W_WIDTH / 2 + Game.W_HEIGHT / 5, 75);
         
         // Draw some lines down the middle of the screen
         for(int i = 20; i < 720; i += 20)
         {
-            Graphics2D g2d = (Graphics2D) g;
             g2d.setStroke(new BasicStroke(5));
-            g2d.drawLine(1280 / 2, i, 1280 /2, i);
+            g2d.drawLine(Game.W_WIDTH / 2, i, Game.W_WIDTH /2, i);
+            
         }
+        
+        g2d.setStroke(new BasicStroke(3));
+        g2d.setColor(Color.WHITE);
+        g2d.drawLine(0, Game.W_HEIGHT, Game.W_WIDTH, Game.W_HEIGHT);
+        g2d.drawLine(0, 0, Game.W_WIDTH, 0);
+        g2d.drawOval(Game.W_WIDTH / 2 - 250 / 2, Game.W_HEIGHT / 2 - 250 / 2, 250, 250);
 	}
 
 	public int getPlayerScore() 
