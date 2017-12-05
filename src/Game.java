@@ -13,7 +13,7 @@ public class Game extends Canvas implements Runnable
 {
 	public static final int W_WIDTH = 1280;
 	public static final int W_HEIGHT = 720;
-	public final String TITLE = "Space Pong (Alpha)";
+	public final static String TITLE = "Space Pong (Alpha)";
 	
 	private Thread thread;
 	private boolean running = false;
@@ -46,7 +46,7 @@ public class Game extends Canvas implements Runnable
 		BufferedImageLoader loader = new BufferedImageLoader();
 		try 
 		{
-			// Sprites by Nicolï¿½s A. Ortega (Deathsbreed) https://opengameart.org/content/pong-graphics
+			// Sprites by Nicolás A. Ortega (Deathsbreed) https://opengameart.org/content/pong-graphics
 			spriteSheet = loader.loadImage("assets/sprites.png");
 			background = loader.loadImage("assets/bg.png");
 		} 
@@ -66,10 +66,9 @@ public class Game extends Canvas implements Runnable
 		computer = new Computer(W_WIDTH - 50, W_HEIGHT / 2 - 75, textures, ball);
 		score = new Score(0, 0);
 		menu = new Menu();
-		
 	}
 	
-	private synchronized void start()
+	public synchronized void start()
 	{
 		if(running)
 			return;
@@ -101,36 +100,37 @@ public class Game extends Canvas implements Runnable
 	public void run() 
 	{	
 		init();
-		long lastTime = System.nanoTime();
-        final double amountOfTicks = 60.0;
-        double ns = 1000000000 / amountOfTicks;
-        double delta = 0;
-        int updates = 0;
-        int frames = 0;
-        long timer = System.currentTimeMillis();
-
+		
+		final double ONE_SECOND = 1000;
+		final double MAX_FPS = 60.0;
+		double fps = 0;
+		double ticks = 0;
+		long timer = System.currentTimeMillis();
+		
         while (running) 
         {
-            long now = System.nanoTime();
-            delta += (now - lastTime) / ns;
-            lastTime = now;
-
-            if(delta >= 1)
-            {
-                tick();
-                updates++;
-                delta--;
-            }
+        	ticks++;
+        	fps++;
+        	
+        	if(System.currentTimeMillis() - timer >= 1000)
+        	{
+        		System.out.println("Ticks: " + ticks + " | " + "FPS: " + fps);
+        		timer = System.currentTimeMillis();
+        		ticks = 0;
+        		fps = 0;
+        	}
+        	
+        	tick();
             render();
-            frames++;
-
-            if(System.currentTimeMillis() - timer > 1000) 
+            
+            try 
             {
-                timer += 1000;
-                System.out.println(updates + " Ticks, FPS " + frames);
-                updates = 0;
-                frames = 0;
-            }
+				Thread.sleep((long) (ONE_SECOND/MAX_FPS));
+			}
+            catch (InterruptedException e) 
+            {
+				e.printStackTrace();
+			}
         }
         stop();
 	}
@@ -187,6 +187,8 @@ public class Game extends Canvas implements Runnable
 	
 			case KeyEvent.VK_ESCAPE:
 				state = STATE.MENU;
+				Music.GAME_THEME.stop();
+				Music.MENU_THEME.play(true);
 				resetGame();
 				break;
 			}
@@ -206,38 +208,45 @@ public class Game extends Canvas implements Runnable
 		int mx = e.getX();
 		int my = e.getY();
 		
-		// Play button
-		if(mx >= Game.W_WIDTH / 2 - 100 && mx <= Game.W_WIDTH / 2 + 200)
+		if(state == STATE.MENU)
 		{
-			
-			if(my >= 300 && my <= 350)
+			// Play button
+			if(mx >= Game.W_WIDTH / 2 - 100 && mx <= Game.W_WIDTH / 2 + 200)
 			{
-				// Pressed play button
-				Game.state = Game.STATE.GAME;
+				
+				if(my >= 300 && my <= 350)
+				{
+					// Pressed play button
+					state = STATE.GAME;
+					
+					// Start the bg music for the game and stop the menu music
+					Music.GAME_THEME.play(true);
+					Music.MENU_THEME.stop();
+				}
 			}
-		}
 
-		// About button
-		if(mx >= Game.W_WIDTH / 2 - 100 && mx <= Game.W_WIDTH / 2 + 200)
-		{
-			
-			if(my >= 400 && my <= 450)
+			// About button
+			if(mx >= Game.W_WIDTH / 2 - 100 && mx <= Game.W_WIDTH / 2 + 200)
 			{
-				// TODO: Make about screen
-				// Inform about the making of this project and the controls
+				
+				if(my >= 400 && my <= 450)
+				{
+					// TODO: Make about screen
+					// Inform about the making of this project and the controls
+				}
 			}
-		}
-		
-		// Quit button
-		if(mx >= Game.W_WIDTH / 2 - 100 && mx <= Game.W_WIDTH / 2 + 200)
-		{
 			
-			if(my >= 500 && my <= 550)
+			// Quit button
+			if(mx >= Game.W_WIDTH / 2 - 100 && mx <= Game.W_WIDTH / 2 + 200)
 			{
-				// Pressed quit button
-				System.exit(1);
+				
+				if(my >= 500 && my <= 550)
+				{
+					// Pressed quit button
+					System.exit(1);
+				}
 			}
-		}
+		}	
 	}
 
 	public void keyReleased(KeyEvent e)

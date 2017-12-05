@@ -15,6 +15,10 @@ public class Menu
 	public Rectangle aboutButton = new Rectangle(Game.W_WIDTH / 2 - 100, 400, 200, 50);
 	public Rectangle quitButton = new Rectangle(Game.W_WIDTH / 2 - 100, 500, 200, 50);
 
+	public Menu()
+	{
+		Music.MENU_THEME.play(true);
+	}
 	
 	public void render(Graphics g)
 	{
