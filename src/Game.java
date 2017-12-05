@@ -1,19 +1,16 @@
 import java.awt.Canvas;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import javax.swing.JFrame;
-import javax.swing.WindowConstants;
 
 public class Game extends Canvas implements Runnable 
 {
 	public static final int W_WIDTH = 1280;
 	public static final int W_HEIGHT = 720;
-	public final static String TITLE = "Space Pong (Alpha)";
+	public final static String TITLE = "Space Pong";
 	
 	private Thread thread;
 	private boolean running = false;
@@ -30,6 +27,7 @@ public class Game extends Canvas implements Runnable
 	private Menu menu;
 	private Settings settings;
 	private GameOver gameOver;
+	private Fonts fonts;
 	
 	public static enum STATE
 	{
@@ -63,14 +61,15 @@ public class Game extends Canvas implements Runnable
 		this.addMouseListener(new MouseInput(this));
 		
 		// Init game objects
+		fonts = new Fonts();
 		textures = new Textures(this);
 		playerPaddle = new PlayerPaddle(0, W_HEIGHT / 2 - 75, textures);
 		ball = new Ball(W_WIDTH / 2 - 25, W_HEIGHT / 2 - 25, textures);
 		computer = new Computer(W_WIDTH - 50, W_HEIGHT / 2 - 75, textures, ball);
-		score = new Score(0, 0);
-		menu = new Menu();
-		settings = new Settings();
-		gameOver = new GameOver(score);
+		score = new Score(0, 0, fonts);
+		menu = new Menu(fonts);
+		settings = new Settings(fonts);
+		gameOver = new GameOver(score, fonts);
 	}
 	
 	public synchronized void start()
@@ -107,7 +106,8 @@ public class Game extends Canvas implements Runnable
 		init();
 		
 		final double ONE_SECOND = 1000;
-		final double MAX_FPS = 60.0;
+		final int MAX_FPS = 60;
+		final double TARGET_FPS = ONE_SECOND / MAX_FPS;
 		double fps = 0;
 		double ticks = 0;
 		long timer = System.currentTimeMillis();
@@ -130,7 +130,7 @@ public class Game extends Canvas implements Runnable
             
             try 
             {
-				Thread.sleep((long) (ONE_SECOND/MAX_FPS));
+				Thread.sleep((long) TARGET_FPS);
 			}
             catch (InterruptedException e) 
             {
@@ -222,7 +222,7 @@ public class Game extends Canvas implements Runnable
 		playerPaddle = new PlayerPaddle(0, W_HEIGHT / 2 - 75, textures);
 		ball = new Ball(W_WIDTH / 2 - 25, W_HEIGHT / 2 - 25, textures);
 		computer = new Computer(W_WIDTH - 50, W_HEIGHT / 2 - 75, textures, ball);
-		score = new Score(0, 0);
+		score = new Score(0, 0, fonts);
 	}
 	
 	public void mousePressed(MouseEvent e)

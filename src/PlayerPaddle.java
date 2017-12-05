@@ -4,14 +4,14 @@ import java.awt.image.BufferedImage;
 public class PlayerPaddle 
 {
 	private static final double GRAVITY = 0.98;
-	private double x;
+	private static double x;
 	private static double y;
 	private double velocityY;
 	private boolean upAcceleration = false;
 	private boolean downAcceleration = false;
 	private final int P_WIDTH = 45;
 	private final int P_HEIGHT = 135;
-	private final double ACCELERATION = 2.5;
+	private final double ACCELERATION = 5;
 	private final double P_MAX_SPEED = 10;
 		
 	private Textures textures;
@@ -90,4 +90,9 @@ public class PlayerPaddle
     {
         this.downAcceleration = downAcceleration;
     }
+
+	public static double getX()
+	{
+		return x;
+	}
 }

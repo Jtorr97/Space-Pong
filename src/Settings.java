@@ -12,6 +12,12 @@ public class Settings
 	public Rectangle currentMaxScore = new Rectangle(100, 100, 400, 50);
 	public Rectangle minusMaxScore = new Rectangle(50, 100, 50, 50);
 	public Rectangle plusMaxScore = new Rectangle(450, 100, 50, 50);
+	private Fonts fonts;
+	
+	public Settings(Fonts fonts)
+	{
+		this.fonts = fonts;
+	}
 	
 	public void render(Graphics g)
 	{
@@ -20,24 +26,9 @@ public class Settings
 		String plus = "+";
 		String goBackToMenu = "[Esc] to return to menu";
 		Graphics2D g2d = (Graphics2D)g;
-        Font font2 = null;
-        
-        // Load custom fonts
-		try 
-		{
-			font2 = Font.createFont(Font.TRUETYPE_FONT, new File("assets/fonts/thin_pixel-7.ttf")).deriveFont(75f);
-		}
-		catch (FontFormatException e)
-		{
-			e.printStackTrace();
-		} 
-		catch (IOException e) 
-		{
-			e.printStackTrace();
-		}
-		
+
 		g.setColor(new Color(92, 240, 225));
-		g.setFont(font2);
+		g.setFont(fonts.getFont2());
         g2d.draw(currentMaxScore);
         g2d.draw(minusMaxScore);
         g2d.draw(plusMaxScore);
