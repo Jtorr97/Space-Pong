@@ -28,6 +28,7 @@ public class Game extends Canvas implements Runnable
 	private Computer computer;
 	private Score score;
 	private Menu menu;
+	private GameOver gameOver;
 	
 	public static enum STATE
 	{
@@ -46,7 +47,7 @@ public class Game extends Canvas implements Runnable
 		BufferedImageLoader loader = new BufferedImageLoader();
 		try 
 		{
-			// Sprites by Nicolás A. Ortega (Deathsbreed) https://opengameart.org/content/pong-graphics
+			// Sprites by Nicolï¿½s A. Ortega (Deathsbreed) https://opengameart.org/content/pong-graphics
 			spriteSheet = loader.loadImage("assets/sprites.png");
 			background = loader.loadImage("assets/bg.png");
 		} 
@@ -66,6 +67,7 @@ public class Game extends Canvas implements Runnable
 		computer = new Computer(W_WIDTH - 50, W_HEIGHT / 2 - 75, textures, ball);
 		score = new Score(0, 0);
 		menu = new Menu();
+		gameOver = new GameOver(score);
 	}
 	
 	public synchronized void start()
@@ -161,6 +163,10 @@ public class Game extends Canvas implements Runnable
 		{
 			menu.render(g);
 		}
+		else if(state == STATE.GAMEOVER)
+		{
+			gameOver.render(g);
+		}
 		/////////////////////////////////////////////////////////////
 		
 		g.dispose();
@@ -208,6 +214,32 @@ public class Game extends Canvas implements Runnable
 		int mx = e.getX();
 		int my = e.getY();
 		
+		if(state == STATE.GAMEOVER)
+		{
+			// Play button
+			if(mx >= Game.W_WIDTH / 2 - 100 && mx <= Game.W_WIDTH / 2 + 200)
+			{	
+				if(my >= 300 && my <= 350)
+				{
+					// Pressed play button
+					state = STATE.GAME;
+					resetGame();
+				}
+			}
+
+			// Quit button
+			if(mx >= Game.W_WIDTH / 2 - 100 && mx <= Game.W_WIDTH / 2 + 200)
+			{
+							
+				if(my >= 400 && my <= 450)
+				{
+					state = STATE.MENU;
+					Music.GAME_THEME.stop();
+					Music.MENU_THEME.play(true);
+					resetGame();
+				}
+			}
+		}
 		if(state == STATE.MENU)
 		{
 			// Play button
