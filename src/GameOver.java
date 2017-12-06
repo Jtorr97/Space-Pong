@@ -14,6 +14,7 @@ public class GameOver
 	private Rectangle quitToMenuButton = new Rectangle(Game.W_WIDTH / 2 + 50, 300, 250, 50);
 	private Score score;
 	private Fonts fonts;
+	private String[] text = {"YOU WIN","GAME OVER", "Play Again", "Quit"};
 	
 	public GameOver(Score score, Fonts fonts)
 	{
@@ -24,28 +25,22 @@ public class GameOver
 	public void render(Graphics g)
 	{
         Graphics2D g2d = (Graphics2D) g;
+        g.setFont(fonts.getFont1());
+        g.setColor(Color.WHITE);
+        FontMetrics fm = g2d.getFontMetrics();
+        int x = ((Game.W_WIDTH - fm.stringWidth(text[0])) / 2);
+        int y = 200;
  
         // If the player wins, they get a message
         if(score.getPlayerScore() == Score.MAX_SCORE)
         {
-        	String winMsg = "YOU WIN";
-        	g.setFont(fonts.getFont1());
-            FontMetrics fm = g2d.getFontMetrics();
-            int x = ((Game.W_WIDTH - fm.stringWidth(winMsg)) / 2);
-            int y = 200;
-            g.setColor(Color.WHITE);
-            g.drawString(winMsg, x, y);
+        	// Win message
+            g.drawString(text[0], x, y);
         }
         else if(score.getComputerScore() == Score.MAX_SCORE)
         {
-        	// Game Over message
-        	String gameOverText = "GAME OVER";
-            g.setFont(fonts.getFont1());
-            FontMetrics fm = g2d.getFontMetrics();
-            int x = ((Game.W_WIDTH - fm.stringWidth(gameOverText)) / 2);
-            int y = 200;
-            g.setColor(Color.WHITE);
-            g.drawString(gameOverText, x, y);
+        	// Game Over message      
+            g.drawString(text[1], x - 100, y);
         }
         
         // For drawing the buttons

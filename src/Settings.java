@@ -14,6 +14,7 @@ public class Settings
 	private Rectangle minusMaxScore = new Rectangle(50, 100, 50, 50);
 	private Rectangle plusMaxScore = new Rectangle(450, 100, 50, 50);
 	private Fonts fonts;
+	private String[] text = {"Max Score: ", "-", "+", "[Esc] to return to menu"};
 
 	public Settings(Fonts fonts)
 	{
@@ -22,21 +23,20 @@ public class Settings
 	
 	public void render(Graphics g)
 	{		
-		String maxSpeed = "Max Score: " + Score.MAX_SCORE;
-		String minus = "-";
-		String plus = "+";
-		String goBackToMenu = "[Esc] to return to menu";
 		Graphics2D g2d = (Graphics2D)g;
-
 		g.setColor(new Color(92, 240, 225));
 		g.setFont(fonts.getFont2());
+		
+		// Draw the buttons
         g2d.draw(currentMaxScore);
         g2d.draw(minusMaxScore);
         g2d.draw(plusMaxScore);
+        
+        // Draw strings 
         g.drawString("Game Settings", 50, 50);
-        g.drawString(maxSpeed, currentMaxScore.x + 60, currentMaxScore.y + 35);
-        g.drawString(minus, minusMaxScore.x + 15, minusMaxScore.y + 40);
-        g.drawString(plus, plusMaxScore.x + 15, plusMaxScore.y + 40);
-        g.drawString(goBackToMenu, 10, Game.W_HEIGHT - 10);
+        g.drawString(text[0] + Score.MAX_SCORE, currentMaxScore.x + 60, currentMaxScore.y + 35);
+        g.drawString(text[1], minusMaxScore.x + 15, minusMaxScore.y + 40);
+        g.drawString(text[2], plusMaxScore.x + 15, plusMaxScore.y + 40);
+        g.drawString(text[3], 10, Game.W_HEIGHT - 10);
 	}
 }

@@ -11,6 +11,7 @@ public class Ball
 	
 	private Textures textures;
 	
+	// Enum for handling the ball going out of the left/right bounds
 	public static enum OUT_OF_BOUNDS
 	{
 		WEST,
@@ -44,7 +45,7 @@ public class Ball
 	// For giving the ball various speed
 	public int getRandomSpeed()
 	{
-		int rng = ThreadLocalRandom.current().nextInt(1, 13);
+		int rng = ThreadLocalRandom.current().nextInt(1, 15);
 		System.out.println(rng);
 		return rng;
 	}
@@ -63,6 +64,7 @@ public class Ball
         }
 	}
 	
+	// Checks if the ball has collided with either paddle
 	public void checkCollision()
 	{
 		// Check if ball collides with left paddle
@@ -87,6 +89,7 @@ public class Ball
 		}
 	}
 	
+	// Check the bounds of the ball
 	public void checkBounds()
 	{
 		// Bounce ball off top/bottom walls

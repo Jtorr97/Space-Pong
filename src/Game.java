@@ -10,7 +10,7 @@ public class Game extends Canvas implements Runnable
 {
 	public static final int W_WIDTH = 1280;
 	public static final int W_HEIGHT = 720;
-	public final static String TITLE = "Space Pong";
+	private final static String TITLE = "Space Pong";
 	
 	private Thread thread;
 	private boolean running = false;
@@ -26,6 +26,7 @@ public class Game extends Canvas implements Runnable
 	private Menu menu;
 	private Settings settings;
 	private GameOver gameOver;
+	private Help help;
 	private Fonts fonts;
 	
 	// Two copies of the background image to scroll
@@ -40,12 +41,13 @@ public class Game extends Canvas implements Runnable
 		MENU,
 		GAME,
 		SETTINGS,
+		HELP,
 		GAMEOVER
 	};
 	
 	public static STATE state = STATE.MENU;	// Default game state
 	
-	private void init()
+	private void initialize()
 	{
 		requestFocus();
 	
@@ -73,6 +75,7 @@ public class Game extends Canvas implements Runnable
 		score = new Score(0, 0, fonts);
 		menu = new Menu(fonts);
 		settings = new Settings(fonts);
+		help = new Help(fonts);
 		gameOver = new GameOver(score, fonts);
 		backOne = new MovingBackground();
         backTwo = new MovingBackground(backOne.getImageWidth(), 0);
@@ -100,7 +103,6 @@ public class Game extends Canvas implements Runnable
 		} 
 		catch (InterruptedException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		System.exit(1);
@@ -109,8 +111,7 @@ public class Game extends Canvas implements Runnable
 	// Main Game loop
 	public void run() 
 	{	
-		init();
-		
+		initialize();
 		final double ONE_SECOND = 1000;
 		final int MAX_FPS = 60;
 		final double TARGET_FPS = ONE_SECOND / MAX_FPS;
@@ -118,12 +119,13 @@ public class Game extends Canvas implements Runnable
 		double ticks = 0;
 		long timer = System.currentTimeMillis();
 		
+		// Game loop 
         while (running) 
         {
         	ticks++;
         	fps++;
         	
-        	if(System.currentTimeMillis() - timer >= 1000)
+        	if(System.currentTimeMillis() - timer >= ONE_SECOND)
         	{
         		System.out.println("Ticks: " + ticks + " | " + "FPS: " + fps);
         		timer = System.currentTimeMillis();
@@ -136,6 +138,8 @@ public class Game extends Canvas implements Runnable
             
             try 
             {
+            	// 1 second = 1000 milliseconds
+            	// 1000/60 is approximately 16.6ms (60 FPS)
 				Thread.sleep((long) TARGET_FPS);
 			}
             catch (InterruptedException e) 
@@ -144,6 +148,17 @@ public class Game extends Canvas implements Runnable
 			}
         }
         stop();
+	}
+	
+	private void tick()
+	{
+		if(state == STATE.GAME)
+		{
+			playerPaddle.tick();
+			ball.tick();
+			computer.tick();
+			score.tick();
+		}
 	}
 	
 	private void render() 
@@ -164,10 +179,11 @@ public class Game extends Canvas implements Runnable
 		 */
 		g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
 		
+		// Always render the moving background 
+		renderMovingBackground(g);
+		
 		if(state == STATE.GAME)
 		{
-			renderMovingBackground(g);
-			
 	        // Render game objects
 			playerPaddle.render(g);
 			ball.render(g);
@@ -175,24 +191,22 @@ public class Game extends Canvas implements Runnable
 			score.render(g);
 		}	
 		else if(state == STATE.MENU)
-		{
-			renderMovingBackground(g);
-
-	        
+		{	    
 			// Render the menu
 			menu.render(g);
 		}
 		else if(state == STATE.SETTINGS)
 		{
-			renderMovingBackground(g);
-
 			// Render the settings screen
 			settings.render(g);
 		}
-		else if(state == STATE.GAMEOVER)
+		else if(state == STATE.HELP)
 		{
-			renderMovingBackground(g);
-			
+			// Render the help screen
+			help.render(g);
+		}
+		else if(state == STATE.GAMEOVER)
+		{			
 			// Render the game over screen
 			gameOver.render(g);
 			playerPaddle.render(g);
@@ -235,7 +249,7 @@ public class Game extends Canvas implements Runnable
 				break;
 			}
 		}
-		if(state == STATE.SETTINGS)
+		if(state == STATE.SETTINGS || state == STATE.HELP)
 		{
 			switch (key)
 			{
@@ -283,8 +297,7 @@ public class Game extends Canvas implements Runnable
         backTwo.render(g);
 
         // Draw the image onto the window
-        g.drawImage(back, 0, 0, null);
-        
+        g.drawImage(back, 0, 0, null);     
 	}
 	
 	// Used to handle mouse input in the MENU, GAMEOVER, and SETTINGS states
@@ -295,42 +308,43 @@ public class Game extends Canvas implements Runnable
 		
 		if(state == STATE.MENU)
 		{
-			// Play button
 			if(mx >= Game.W_WIDTH / 2 - 100 && mx <= Game.W_WIDTH / 2 + 200)
 			{
-				
+				// Play button
 				if(my >= 300 && my <= 350)
 				{
 					// Pressed play button
 					state = STATE.GAME;
-					
+				
 					// Start the background music for the game and stop the menu music
 					Music.GAME_THEME.play(true);
 					Music.MENU_THEME.stop();
 				}
-			}
+			
 
-			// Settings button
-			if(mx >= Game.W_WIDTH / 2 - 100 && mx <= Game.W_WIDTH / 2 + 200)
-			{
-				
+				// Settings button
 				if(my >= 400 && my <= 450)
 				{
 					// Pressed settings button
 					state = STATE.SETTINGS;
 				}
-			}
+		
 			
-			// Quit button
-			if(mx >= Game.W_WIDTH / 2 - 100 && mx <= Game.W_WIDTH / 2 + 200)
-			{
-				
+				// Help button	
 				if(my >= 500 && my <= 550)
+				{
+					// Pressed the help button
+					state = STATE.HELP;
+				}
+				
+				// Quit button
+				if(my >= 600 && my <= 650)
 				{
 					// Pressed quit button
 					System.exit(1);
 				}
 			}
+			
 		}	
 		if(state == STATE.SETTINGS)
 		{
@@ -350,6 +364,7 @@ public class Game extends Canvas implements Runnable
 					Score.MAX_SCORE += 1;
 				}
 			}
+			System.out.println(mx + " " + my);
 		}
 		if(state == STATE.GAMEOVER)
 		{
@@ -376,17 +391,6 @@ public class Game extends Canvas implements Runnable
 					resetGame();
 				}
 			}
-		}
-	}
-	
-	private void tick()
-	{
-		if(state == STATE.GAME)
-		{
-			playerPaddle.tick();
-			ball.tick();
-			computer.tick();
-			score.tick();
 		}
 	}
 	

@@ -4,7 +4,7 @@ public class Computer
 {
 	private static double x;
 	private static double y;
-	private double COMPUTER_MAX_SPEED = 10;
+	private double COMPUTER_MAX_SPEED = 9.8;
 	private Ball ball;
 	private Textures textures;
 	
