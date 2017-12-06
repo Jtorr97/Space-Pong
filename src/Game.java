@@ -17,6 +17,7 @@ public class Game extends Canvas implements Runnable
 	
 	private BufferedImage image = new BufferedImage(W_WIDTH, W_HEIGHT, BufferedImage.TYPE_INT_RGB);
 	private BufferedImage spriteSheet = null;
+	private BufferedImage menuScreenBackground = null;
 	private BufferedImage background = null;
 	private Textures textures;
 	
@@ -28,7 +29,7 @@ public class Game extends Canvas implements Runnable
 	private Settings settings;
 	private GameOver gameOver;
 	private Fonts fonts;
-	
+
 	public static enum STATE
 	{
 		MENU,
@@ -42,12 +43,12 @@ public class Game extends Canvas implements Runnable
 	private void init()
 	{
 		requestFocus();
-		
+	
 		// Init sprites
 		BufferedImageLoader loader = new BufferedImageLoader();
 		try 
 		{
-			// Sprites by Nicolás A. Ortega (Deathsbreed) https://opengameart.org/content/pong-graphics
+			menuScreenBackground = loader.loadImage("assets/menuscreenbg.png");
 			spriteSheet = loader.loadImage("assets/sprites.png");
 			background = loader.loadImage("assets/bg.png");
 		} 
@@ -55,6 +56,7 @@ public class Game extends Canvas implements Runnable
 		{
 			e.printStackTrace();
 		}
+		
 		
 		// Add our keylistener
 		this.addKeyListener(new KeyInput(this));
@@ -154,9 +156,10 @@ public class Game extends Canvas implements Runnable
 		
 		//////////////////////////////////////////////////////////////
 		g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
-		g.drawImage(background, 0, 0, null);
+		
 		if(state == STATE.GAME)
 		{
+			g.drawImage(background, getX(), getY(), background.getWidth(), background.getHeight(), null);
 			playerPaddle.render(g);
 			ball.render(g);
 			computer.render(g);
@@ -164,6 +167,7 @@ public class Game extends Canvas implements Runnable
 		}	
 		else if(state == STATE.MENU)
 		{
+			g.drawImage(menuScreenBackground, 0, 0, getWidth(), getHeight(), null);
 			menu.render(g);
 		}
 		else if(state == STATE.SETTINGS)
@@ -172,7 +176,12 @@ public class Game extends Canvas implements Runnable
 		}
 		else if(state == STATE.GAMEOVER)
 		{
+			g.drawImage(background, 0, 0, null);
 			gameOver.render(g);
+			playerPaddle.render(g);
+			ball.render(g);
+			computer.render(g);
+			score.render(g);
 		}
 		/////////////////////////////////////////////////////////////
 		
