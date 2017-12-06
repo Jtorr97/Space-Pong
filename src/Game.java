@@ -17,8 +17,6 @@ public class Game extends Canvas implements Runnable
 	
 	private BufferedImage image = new BufferedImage(W_WIDTH, W_HEIGHT, BufferedImage.TYPE_INT_RGB);
 	private BufferedImage spriteSheet = null;
-	private BufferedImage menuScreenBackground = null;
-	private BufferedImage background = null;
 	private Textures textures;
 	
 	private PlayerPaddle playerPaddle;
@@ -29,7 +27,14 @@ public class Game extends Canvas implements Runnable
 	private Settings settings;
 	private GameOver gameOver;
 	private Fonts fonts;
+	
+	// Two copies of the background image to scroll
+    private MovingBackground backOne;
+    private MovingBackground backTwo;
 
+    private BufferedImage back;
+
+    // enum for handling the state of the game
 	public static enum STATE
 	{
 		MENU,
@@ -38,31 +43,28 @@ public class Game extends Canvas implements Runnable
 		GAMEOVER
 	};
 	
-	public static STATE state = STATE.MENU;
+	public static STATE state = STATE.MENU;	// Default game state
 	
 	private void init()
 	{
 		requestFocus();
 	
-		// Init sprites
+		// Load sprite sheet
 		BufferedImageLoader loader = new BufferedImageLoader();
 		try 
 		{
-			menuScreenBackground = loader.loadImage("assets/menuscreenbg.png");
 			spriteSheet = loader.loadImage("assets/sprites.png");
-			background = loader.loadImage("assets/bg.png");
 		} 
 		catch(IOException e)
 		{
 			e.printStackTrace();
 		}
 		
-		
-		// Add our keylistener
+		// Add our Key/MouseListeners
 		this.addKeyListener(new KeyInput(this));
 		this.addMouseListener(new MouseInput(this));
 		
-		// Init game objects
+		// Initialize game objects
 		fonts = new Fonts();
 		textures = new Textures(this);
 		playerPaddle = new PlayerPaddle(0, W_HEIGHT / 2 - 75, textures);
@@ -72,6 +74,8 @@ public class Game extends Canvas implements Runnable
 		menu = new Menu(fonts);
 		settings = new Settings(fonts);
 		gameOver = new GameOver(score, fonts);
+		backOne = new MovingBackground();
+        backTwo = new MovingBackground(backOne.getImageWidth(), 0);
 	}
 	
 	public synchronized void start()
@@ -148,18 +152,23 @@ public class Game extends Canvas implements Runnable
 		
 		if(bs == null)
 		{
+			// Triple buffering
 			createBufferStrategy(3);
 			return;
 		}
 		
 		Graphics g = bs.getDrawGraphics();
 		
-		//////////////////////////////////////////////////////////////
+		/*
+		 * Begin rendering here
+		 */
 		g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
 		
 		if(state == STATE.GAME)
 		{
-			g.drawImage(background, getX(), getY(), background.getWidth(), background.getHeight(), null);
+			renderMovingBackground(g);
+			
+	        // Render game objects
 			playerPaddle.render(g);
 			ball.render(g);
 			computer.render(g);
@@ -167,28 +176,39 @@ public class Game extends Canvas implements Runnable
 		}	
 		else if(state == STATE.MENU)
 		{
-			g.drawImage(menuScreenBackground, 0, 0, getWidth(), getHeight(), null);
+			renderMovingBackground(g);
+
+	        
+			// Render the menu
 			menu.render(g);
 		}
 		else if(state == STATE.SETTINGS)
 		{
+			renderMovingBackground(g);
+
+			// Render the settings screen
 			settings.render(g);
 		}
 		else if(state == STATE.GAMEOVER)
 		{
-			g.drawImage(background, 0, 0, null);
+			renderMovingBackground(g);
+			
+			// Render the game over screen
 			gameOver.render(g);
 			playerPaddle.render(g);
 			ball.render(g);
 			computer.render(g);
 			score.render(g);
 		}
-		/////////////////////////////////////////////////////////////
+		/*
+		 * End rendering here
+		 */
 		
 		g.dispose();
 		bs.show();
 	}
 	
+	// Used to handle keyinput in the GAME and SETTING state
 	public void keyPressed(KeyEvent e)
 	{
 		int key = e.getKeyCode();
@@ -220,12 +240,33 @@ public class Game extends Canvas implements Runnable
 			switch (key)
 			{
 			case KeyEvent.VK_ESCAPE:
-				state = STATE.MENU;
+				state = STATE.MENU;	// Go back to menu
 				break;
 			}
 		}
 	}
 	
+	// Used to handle key released inputs in GAME state
+	public void keyReleased(KeyEvent e)
+	{
+		int key = e.getKeyCode();
+		
+		if(state == STATE.GAME)
+		{
+			switch (key)
+			{
+			case KeyEvent.VK_W:
+	            playerPaddle.setUpAcceleration(false);
+				break;
+				
+			case KeyEvent.VK_S:
+	            playerPaddle.setDownAcceleration(false);
+				break;
+			}
+		}
+	}
+	
+	// Used to start a new game
 	private void resetGame() 
 	{
 		playerPaddle = new PlayerPaddle(0, W_HEIGHT / 2 - 75, textures);
@@ -234,37 +275,24 @@ public class Game extends Canvas implements Runnable
 		score = new Score(0, 0, fonts);
 	}
 	
+	// Small method for rendering the moving background
+	private void renderMovingBackground(Graphics g)
+	{
+		// Put the two copies of the background image onto the buffer
+        backOne.render(g);
+        backTwo.render(g);
+
+        // Draw the image onto the window
+        g.drawImage(back, 0, 0, null);
+        
+	}
+	
+	// Used to handle mouse input in the MENU, GAMEOVER, and SETTINGS states
 	public void mousePressed(MouseEvent e)
 	{
 		int mx = e.getX();
 		int my = e.getY();
 		
-		if(state == STATE.GAMEOVER)
-		{
-			// Play again button
-			if(mx >= (Game.W_WIDTH / 2) - 275 && mx <= Game.W_WIDTH / 2 - 25)
-			{	
-				if(my >= 300 && my <= 350)
-				{
-					// Pressed play button
-					state = STATE.GAME;
-					resetGame();
-				}
-			}
-
-			// Quit button
-			if(mx >= Game.W_WIDTH / 2 + 50 && mx <= Game.W_WIDTH / 2 + 300)
-			{
-							
-				if(my >= 300 && my <= 350)
-				{
-					state = STATE.MENU;
-					Music.GAME_THEME.stop();
-					Music.MENU_THEME.play(true);
-					resetGame();
-				}
-			}
-		}
 		if(state == STATE.MENU)
 		{
 			// Play button
@@ -276,18 +304,19 @@ public class Game extends Canvas implements Runnable
 					// Pressed play button
 					state = STATE.GAME;
 					
-					// Start the bg music for the game and stop the menu music
+					// Start the background music for the game and stop the menu music
 					Music.GAME_THEME.play(true);
 					Music.MENU_THEME.stop();
 				}
 			}
 
-			// About button
+			// Settings button
 			if(mx >= Game.W_WIDTH / 2 - 100 && mx <= Game.W_WIDTH / 2 + 200)
 			{
 				
 				if(my >= 400 && my <= 450)
 				{
+					// Pressed settings button
 					state = STATE.SETTINGS;
 				}
 			}
@@ -321,27 +350,31 @@ public class Game extends Canvas implements Runnable
 					Score.MAX_SCORE += 1;
 				}
 			}
-			System.out.println(mx + " " + my);
 		}
-	}
-
-	public void keyReleased(KeyEvent e)
-	{
-		int key = e.getKeyCode();
-		
-		if(state == STATE.GAME)
+		if(state == STATE.GAMEOVER)
 		{
-			switch (key)
-			{
-			case KeyEvent.VK_W:
-				// Move the player paddle up
-	            playerPaddle.setUpAcceleration(false);
-				break;
-				
-			case KeyEvent.VK_S:
-				// Move the player paddle down
-	            playerPaddle.setDownAcceleration(false);
-				break;
+			// Play again button
+			if(mx >= (Game.W_WIDTH / 2) - 275 && mx <= Game.W_WIDTH / 2 - 25)
+			{	
+				if(my >= 300 && my <= 350)
+				{
+					// Pressed play button
+					state = STATE.GAME;
+					resetGame();
+				}
+			}
+
+			// Quit button
+			if(mx >= Game.W_WIDTH / 2 + 50 && mx <= Game.W_WIDTH / 2 + 300)
+			{			
+				if(my >= 300 && my <= 350)
+				{
+					// Pressed quit button
+					state = STATE.MENU;
+					Music.GAME_THEME.stop();
+					Music.MENU_THEME.play(true);
+					resetGame();
+				}
 			}
 		}
 	}
