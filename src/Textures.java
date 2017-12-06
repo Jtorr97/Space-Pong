@@ -15,8 +15,8 @@ public class Textures
 
 	private void getTextures() 
 	{
-		ball = ss.grabImage(3, 1, 50, 50);
-		player = ss.grabImage(1, 1, 50, 150);
-		computer = ss.grabImage(2, 1, 50, 150);
+		ball = ss.grabImage(3, 1, SpriteSheet.PIXEL_SIZE, SpriteSheet.PIXEL_SIZE);
+		player = ss.grabImage(1, 1, SpriteSheet.PIXEL_SIZE, SpriteSheet.PIXEL_SIZE * 3);
+		computer = ss.grabImage(2, 1, SpriteSheet.PIXEL_SIZE, SpriteSheet.PIXEL_SIZE * 3);
 	}
 }

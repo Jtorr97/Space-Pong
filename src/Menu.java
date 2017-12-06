@@ -1,23 +1,24 @@
 import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontFormatException;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.io.File;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 public class Menu 
 {
-	public Rectangle playButton = new Rectangle(Game.W_WIDTH / 2 - 100, 300, 200, 50);
-	public Rectangle aboutButton = new Rectangle(Game.W_WIDTH / 2 - 100, 400, 200, 50);
-	public Rectangle quitButton = new Rectangle(Game.W_WIDTH / 2 - 100, 500, 200, 50);
+	private Rectangle playButton = new Rectangle(Game.W_WIDTH / 2 - 100, 300, 200, 50);
+	private Rectangle aboutButton = new Rectangle(Game.W_WIDTH / 2 - 100, 400, 200, 50);
+	private Rectangle quitButton = new Rectangle(Game.W_WIDTH / 2 - 100, 500, 200, 50);
 	private Fonts fonts;
+    private BufferedImage image;
 	
 	public Menu(Fonts fonts)
 	{
+		// Menu music plays by default since Menu state is the primary state
 		Music.MENU_THEME.play(true);
+		
 		this.fonts = fonts;
 	}
 	

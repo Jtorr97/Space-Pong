@@ -1,5 +1,6 @@
 import java.awt.Graphics;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Ball 
 {
@@ -40,17 +41,19 @@ public class Ball
 		g.drawImage(textures.ball, (int)x, (int)y, null);
 	}
 	
+	// For giving the ball various speed
 	public int getRandomSpeed()
 	{
-		Random rand = new Random();
-		int rng = rand.nextInt(6) + 7;
+		int rng = ThreadLocalRandom.current().nextInt(1, 13);
+		System.out.println(rng);
 		return rng;
 	}
 	
+	// For moving the ball in variable directions
 	public int getRandomDirection()
 	{
-		int rand = (int)(Math.random() * 2);
-        if(rand == 1)
+		int rng = (int)(Math.random() * 2);
+        if(rng == 1)
         {
            return 1;
         }
@@ -65,7 +68,7 @@ public class Ball
 		// Check if ball collides with left paddle
 		if(this.x <= PlayerPaddle.getX())
 		{
-			if(this.y >= PlayerPaddle.getY() && y <= PlayerPaddle.getY() + 150)
+			if(this.y >= PlayerPaddle.getY() && y <= PlayerPaddle.getY() + SpriteSheet.PIXEL_SIZE * 3)
 			{
 				Sound.PADDLE_HIT.play();
 				this.velocityX = -velocityX; 
@@ -75,7 +78,7 @@ public class Ball
 		// Check if ball collides with right paddle
 		if(this.x >= Computer.getX())
 		{
-			if(this.y >= Computer.getY() && this.y <= Computer.getY() + 150)
+			if(this.y >= Computer.getY() && this.y <= Computer.getY() + SpriteSheet.PIXEL_SIZE * 3)
 			{
 				Sound.PADDLE_HIT.play();
 				this.velocityX = -velocityX;
@@ -92,7 +95,7 @@ public class Ball
 			velocityY = -velocityY;
 			Sound.WALL_HIT.play();
 		}
-		if(y > Game.W_HEIGHT - 50)
+		if(y > Game.W_HEIGHT - SpriteSheet.PIXEL_SIZE)
 		{
 			velocityY = -velocityY;
 			Sound.WALL_HIT.play();
