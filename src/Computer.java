@@ -4,7 +4,7 @@ public class Computer
 {
 	private static double x;
 	private static double y;
-	private double COMPUTER_MAX_SPEED = 9.8;
+	private double COMPUTER_MAX_SPEED = 9.5;
 	private Ball ball;
 	private Textures textures;
 	
@@ -35,9 +35,9 @@ public class Computer
 			y = 0;
 		}
             
-        if(y >= Game.W_HEIGHT - 150)
+        if(y >= Game.W_HEIGHT - SpriteSheet.PIXEL_SIZE * 3)
         {
-        	y = Game.W_HEIGHT - 150;
+        	y = Game.W_HEIGHT - SpriteSheet.PIXEL_SIZE * 3;
         }
 	}
 	

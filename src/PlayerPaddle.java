@@ -42,16 +42,24 @@ public class PlayerPaddle
 		
 		// Handle speed so paddle doesn't go too fast
 		if(velocityY >= P_MAX_SPEED)
+		{
 			velocityY = P_MAX_SPEED;
+		}		
 		else if(velocityY <= -P_MAX_SPEED)
+		{
 			velocityY = -P_MAX_SPEED;
+		}	
 		
 		// Handle bounds
 		if(y <= 0)
-            y = 0;
-        if(y >= 585)
-            y = 585;
-        
+		{
+			y = 0;
+		}          
+        if(y >= Game.W_HEIGHT - SpriteSheet.PIXEL_SIZE * 3)
+        {
+        	y = Game.W_HEIGHT - SpriteSheet.PIXEL_SIZE * 3;
+        }
+                 
         // Update paddle velocity/position
         y += velocityY;
 	}

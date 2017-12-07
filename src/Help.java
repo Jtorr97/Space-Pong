@@ -22,7 +22,7 @@ public class Help
         
         // For centering the text
         FontMetrics fm = g2d.getFontMetrics();
-        int x = (Game.W_WIDTH / 2) - fm.stringWidth(text[0]);
+        int x = (Game.W_WIDTH / 2) - fm.stringWidth(text[0]) - 100;
         int y = 50;
 		
 		// For drawing the text

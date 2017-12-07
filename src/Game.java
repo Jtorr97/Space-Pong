@@ -69,9 +69,9 @@ public class Game extends Canvas implements Runnable
 		// Initialize game objects
 		fonts = new Fonts();
 		textures = new Textures(this);
-		playerPaddle = new PlayerPaddle(0, W_HEIGHT / 2 - 75, textures);
-		ball = new Ball(W_WIDTH / 2 - 25, W_HEIGHT / 2 - 25, textures);
-		computer = new Computer(W_WIDTH - 50, W_HEIGHT / 2 - 75, textures, ball);
+		playerPaddle = new PlayerPaddle(0, W_HEIGHT / 2 - (SpriteSheet.PIXEL_SIZE * 3 / 2), textures);
+		ball = new Ball(W_WIDTH / 2 - (SpriteSheet.PIXEL_SIZE / 2), W_HEIGHT / 2 - (SpriteSheet.PIXEL_SIZE / 2), textures);
+		computer = new Computer(W_WIDTH - SpriteSheet.PIXEL_SIZE, W_HEIGHT / 2 - (SpriteSheet.PIXEL_SIZE * 3 / 2), textures, ball);
 		score = new Score(0, 0, fonts);
 		menu = new Menu(fonts);
 		settings = new Settings(fonts);
@@ -112,43 +112,41 @@ public class Game extends Canvas implements Runnable
 	public void run() 
 	{	
 		initialize();
-		final double ONE_SECOND = 1000;
-		final int MAX_FPS = 60;
-		final double TARGET_FPS = ONE_SECOND / MAX_FPS;
-		double fps = 0;
-		double ticks = 0;
+		long lastTime = System.nanoTime();
+		final double AMOUNT_OF_TICKS = 60.0;
+		double ns = 1000000000 / AMOUNT_OF_TICKS;
+		double delta = 0;
+		int updates = 0;
+		int frames = 0;
 		long timer = System.currentTimeMillis();
 		
 		// Game loop 
-        while (running) 
+		while (running) 
         {
-        	ticks++;
-        	fps++;
-        	
-        	if(System.currentTimeMillis() - timer >= ONE_SECOND)
-        	{
-        		System.out.println("Ticks: " + ticks + " | " + "FPS: " + fps);
-        		timer = System.currentTimeMillis();
-        		ticks = 0;
-        		fps = 0;
-        	}
-        	
-        	tick();
+            long now = System.nanoTime();
+            delta += (now - lastTime) / ns;
+            lastTime = now;
+
+            if(delta >= 1)
+            {
+                tick();
+                updates++;
+                delta--;
+            }
             render();
-            
-            try 
+            frames++;
+
+            if(System.currentTimeMillis() - timer >= 1000) 
             {
-            	// 1 second = 1000 milliseconds
-            	// 1000/60 is approximately 16.6ms (60 FPS)
-				Thread.sleep((long) TARGET_FPS);
-			}
-            catch (InterruptedException e) 
-            {
-				e.printStackTrace();
-			}
+                timer += 1000;
+                System.out.println(updates + " Ticks, FPS " + frames);
+                updates = 0;
+                frames = 0;
+            }
         }
-        stop();
+	    stop();
 	}
+	
 	
 	private void tick()
 	{
@@ -178,7 +176,7 @@ public class Game extends Canvas implements Runnable
 		 * Begin rendering here
 		 */
 		g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
-		
+
 		// Always render the moving background 
 		renderMovingBackground(g);
 		
@@ -283,9 +281,9 @@ public class Game extends Canvas implements Runnable
 	// Used to start a new game
 	private void resetGame() 
 	{
-		playerPaddle = new PlayerPaddle(0, W_HEIGHT / 2 - 75, textures);
-		ball = new Ball(W_WIDTH / 2 - 25, W_HEIGHT / 2 - 25, textures);
-		computer = new Computer(W_WIDTH - 50, W_HEIGHT / 2 - 75, textures, ball);
+		playerPaddle = new PlayerPaddle(0, W_HEIGHT / 2 - (SpriteSheet.PIXEL_SIZE * 3 / 2), textures);
+		ball = new Ball(W_WIDTH / 2 - (SpriteSheet.PIXEL_SIZE / 2), W_HEIGHT / 2 - (SpriteSheet.PIXEL_SIZE / 2), textures);
+		computer = new Computer(W_WIDTH - SpriteSheet.PIXEL_SIZE, W_HEIGHT / 2 - (SpriteSheet.PIXEL_SIZE * 3 / 2), textures, ball);
 		score = new Score(0, 0, fonts);
 	}
 	

@@ -1,5 +1,4 @@
 import java.awt.Graphics;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Ball 
@@ -105,7 +104,7 @@ public class Ball
 		}
 			
 		// Check if ball goes out of the field
-		if(this.x < 0)
+		if(this.x < -SpriteSheet.PIXEL_SIZE / 2)
 		{
 			out_of_bounds = OUT_OF_BOUNDS.WEST;
 			this.x = Game.W_WIDTH / 2 - 25; 
@@ -113,7 +112,7 @@ public class Ball
 			this.velocityX = -velocityX;
 			this.velocityY = 2;
 		}
-		else if(this.x > Game.W_WIDTH)
+		else if(this.x > Game.W_WIDTH + SpriteSheet.PIXEL_SIZE / 2)
 		{
 			out_of_bounds = OUT_OF_BOUNDS.EAST;
 			this.x = Game.W_WIDTH / 2 - 25; 

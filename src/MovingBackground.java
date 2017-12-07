@@ -36,7 +36,7 @@ public class MovingBackground
         g.drawImage(image, getX(), getY(), image.getWidth(), image.getHeight(), null);
 
         // Move the x position left for next time
-        this.x -= 10;
+        this.x -= 1;
 
         // Check to see if the image has gone off stage left
         if (this.x <= -1 * image.getWidth()) 

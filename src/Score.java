@@ -63,8 +63,6 @@ public class Score
         g2d.drawLine(Game.W_WIDTH / 2, 0, Game.W_WIDTH / 2, Game.W_HEIGHT);
         g2d.setStroke(new BasicStroke(1));
         g2d.setColor(Color.WHITE);
-        g2d.drawLine(0, Game.W_HEIGHT, Game.W_WIDTH, Game.W_HEIGHT);
-        //g2d.drawLine(0, 0, Game.W_WIDTH, 0);
         g2d.drawOval(Game.W_WIDTH / 2 - 250 / 2, Game.W_HEIGHT / 2 - 250 / 2, 250, 250);
 	}
 
