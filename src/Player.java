@@ -1,7 +1,7 @@
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
-public class PlayerPaddle 
+public class Player 
 {
 	private static final double GRAVITY = 0.98;
 	private static double x;
@@ -9,15 +9,13 @@ public class PlayerPaddle
 	private double velocityY;
 	private boolean upAcceleration = false;
 	private boolean downAcceleration = false;
-	private final int P_WIDTH = 45;
-	private final int P_HEIGHT = 135;
 	private final double ACCELERATION = 5;
 	private final double P_MAX_SPEED = 10;
 		
 	private Textures textures;
 	
 	// Default constructor
-	public PlayerPaddle(double x, double y, Textures textures)
+	public Player(double x, double y, Textures textures)
 	{
 		this.x = x;
 		this.y = y;
@@ -67,16 +65,6 @@ public class PlayerPaddle
 	public void render(Graphics g)
 	{
 		g.drawImage(textures.player, (int)x, (int)y, null);
-	}
-	
-	public int getPlayerPaddleHeight()
-	{
-		return P_HEIGHT;
-	}
-	
-	public int getPlayerPaddleWidth()
-	{
-		return P_WIDTH;
 	}
 	
 	public static double getY()

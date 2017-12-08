@@ -19,7 +19,7 @@ public class Game extends Canvas implements Runnable
 	private BufferedImage spriteSheet = null;
 	private Textures textures;
 	
-	private PlayerPaddle playerPaddle;
+	private Player player;
 	private Ball ball;
 	private Computer computer;
 	private Score score;
@@ -69,9 +69,9 @@ public class Game extends Canvas implements Runnable
 		// Initialize game objects
 		fonts = new Fonts();
 		textures = new Textures(this);
-		playerPaddle = new PlayerPaddle(0, W_HEIGHT / 2 - (SpriteSheet.PIXEL_SIZE * 3 / 2), textures);
+		player = new Player(0, W_HEIGHT / 2 - (SpriteSheet.PIXEL_SIZE * 3 / 2), textures);
 		ball = new Ball(W_WIDTH / 2 - (SpriteSheet.PIXEL_SIZE / 2), W_HEIGHT / 2 - (SpriteSheet.PIXEL_SIZE / 2), textures);
-		computer = new Computer(W_WIDTH - SpriteSheet.PIXEL_SIZE, W_HEIGHT / 2 - (SpriteSheet.PIXEL_SIZE * 3 / 2), textures, ball);
+		computer = new Computer(W_WIDTH - SpriteSheet.PIXEL_SIZE / 2, W_HEIGHT / 2 - (SpriteSheet.PIXEL_SIZE * 3 / 2), textures, ball);
 		score = new Score(0, 0, fonts);
 		menu = new Menu(fonts);
 		settings = new Settings(fonts);
@@ -152,7 +152,7 @@ public class Game extends Canvas implements Runnable
 	{
 		if(state == STATE.GAME)
 		{
-			playerPaddle.tick();
+			player.tick();
 			ball.tick();
 			computer.tick();
 			score.tick();
@@ -183,7 +183,7 @@ public class Game extends Canvas implements Runnable
 		if(state == STATE.GAME)
 		{
 	        // Render game objects
-			playerPaddle.render(g);
+			player.render(g);
 			ball.render(g);
 			computer.render(g);
 			score.render(g);
@@ -207,8 +207,7 @@ public class Game extends Canvas implements Runnable
 		{			
 			// Render the game over screen
 			gameOver.render(g);
-			playerPaddle.render(g);
-			ball.render(g);
+			player.render(g);
 			computer.render(g);
 			score.render(g);
 		}
@@ -231,12 +230,12 @@ public class Game extends Canvas implements Runnable
 			{
 			case KeyEvent.VK_W:
 				// Move the player paddle up
-	            playerPaddle.setUpAcceleration(true);
+	            player.setUpAcceleration(true);
 				break;
 				
 			case KeyEvent.VK_S:
 				// Move the player paddle down
-	            playerPaddle.setDownAcceleration(true);
+	            player.setDownAcceleration(true);
 				break;
 	
 			case KeyEvent.VK_ESCAPE:
@@ -268,11 +267,11 @@ public class Game extends Canvas implements Runnable
 			switch (key)
 			{
 			case KeyEvent.VK_W:
-	            playerPaddle.setUpAcceleration(false);
+	            player.setUpAcceleration(false);
 				break;
 				
 			case KeyEvent.VK_S:
-	            playerPaddle.setDownAcceleration(false);
+	            player.setDownAcceleration(false);
 				break;
 			}
 		}
@@ -281,7 +280,7 @@ public class Game extends Canvas implements Runnable
 	// Used to start a new game
 	private void resetGame() 
 	{
-		playerPaddle = new PlayerPaddle(0, W_HEIGHT / 2 - (SpriteSheet.PIXEL_SIZE * 3 / 2), textures);
+		player = new Player(0, W_HEIGHT / 2 - (SpriteSheet.PIXEL_SIZE * 3 / 2), textures);
 		ball = new Ball(W_WIDTH / 2 - (SpriteSheet.PIXEL_SIZE / 2), W_HEIGHT / 2 - (SpriteSheet.PIXEL_SIZE / 2), textures);
 		computer = new Computer(W_WIDTH - SpriteSheet.PIXEL_SIZE, W_HEIGHT / 2 - (SpriteSheet.PIXEL_SIZE * 3 / 2), textures, ball);
 		score = new Score(0, 0, fonts);

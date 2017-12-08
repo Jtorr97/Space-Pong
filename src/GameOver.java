@@ -14,7 +14,7 @@ public class GameOver
 	private Rectangle quitToMenuButton = new Rectangle(Game.W_WIDTH / 2 + 50, 300, 250, 50);
 	private Score score;
 	private Fonts fonts;
-	private String[] text = {"YOU WIN","GAME OVER", "Play Again", "Quit"};
+	private String[] text = {"YOU WIN","GAME OVER", "Rematch", "Quit"};
 	
 	public GameOver(Score score, Fonts fonts)
 	{
@@ -46,8 +46,8 @@ public class GameOver
         // For drawing the buttons
         g.setFont(fonts.getFont2());
         g2d.draw(playAgainButton);
-        g.drawString("Play Again", playAgainButton.x + 35, playAgainButton.y + 35);
+        g.drawString(text[2], playAgainButton.x + 35, playAgainButton.y + 35);
         g2d.draw(quitToMenuButton);
-        g.drawString("Quit", quitToMenuButton.x + 90, quitToMenuButton.y + 35);
+        g.drawString(text[3], quitToMenuButton.x + 90, quitToMenuButton.y + 35);
 	}
 }

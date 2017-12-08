@@ -5,7 +5,7 @@ public class Ball
 {
 	private double x;
 	private double y;
-	private double velocityX = 15;
+	private double velocityX = 16;
 	private double velocityY = -2;
 	
 	private Textures textures;
@@ -45,7 +45,6 @@ public class Ball
 	public int getRandomSpeed()
 	{
 		int rng = ThreadLocalRandom.current().nextInt(1, 15);
-		System.out.println(rng);
 		return rng;
 	}
 	
@@ -67,25 +66,29 @@ public class Ball
 	public void checkCollision()
 	{
 		// Check if ball collides with left paddle
-		if(this.x <= PlayerPaddle.getX())
+		if(x <= Player.getX())
 		{
-			if(this.y >= PlayerPaddle.getY() && y <= PlayerPaddle.getY() + SpriteSheet.PIXEL_SIZE * 3)
+			if(y >= Player.getY() && y <= Player.getY() + SpriteSheet.PIXEL_SIZE * 3)
 			{
-				Sound.PADDLE_HIT.play();
-				this.velocityX = -velocityX; 
-				this.velocityY = getRandomSpeed() * getRandomDirection();
+				hitBall();
 			}
 		}
 		// Check if ball collides with right paddle
-		if(this.x >= Computer.getX())
+		if(x >= Computer.getX())
 		{
-			if(this.y >= Computer.getY() && this.y <= Computer.getY() + SpriteSheet.PIXEL_SIZE * 3)
+			if(y >= Computer.getY() && y <= Computer.getY() + SpriteSheet.PIXEL_SIZE * 3)
 			{
-				Sound.PADDLE_HIT.play();
-				this.velocityX = -velocityX;
-				this.velocityY = getRandomSpeed() * getRandomDirection();
+				hitBall();
 			}
 		}
+	}
+	
+	// Reverses the direction when the paddle hits the ball
+	public void hitBall()
+	{
+		Sound.PADDLE_HIT.play();
+		velocityX = -velocityX; 
+		velocityY = getRandomSpeed() * getRandomDirection();
 	}
 	
 	// Check the bounds of the ball
@@ -97,29 +100,32 @@ public class Ball
 			velocityY = -velocityY;
 			Sound.WALL_HIT.play();
 		}
-		if(y > Game.W_HEIGHT - SpriteSheet.PIXEL_SIZE)
+		if(y > Game.W_HEIGHT - SpriteSheet.PIXEL_SIZE / 2)
 		{
 			velocityY = -velocityY;
 			Sound.WALL_HIT.play();
 		}
 			
 		// Check if ball goes out of the field
-		if(this.x < -SpriteSheet.PIXEL_SIZE / 2)
+		if(x < -SpriteSheet.PIXEL_SIZE / 2)
 		{
 			out_of_bounds = OUT_OF_BOUNDS.WEST;
-			this.x = Game.W_WIDTH / 2 - 25; 
-			this.y = Game.W_HEIGHT / 2 - 25;
-			this.velocityX = -velocityX;
-			this.velocityY = 2;
+			resetBall();
 		}
-		else if(this.x > Game.W_WIDTH + SpriteSheet.PIXEL_SIZE / 2)
+		else if(x > Game.W_WIDTH + SpriteSheet.PIXEL_SIZE / 2)
 		{
 			out_of_bounds = OUT_OF_BOUNDS.EAST;
-			this.x = Game.W_WIDTH / 2 - 25; 
-			this.y = Game.W_HEIGHT / 2 - 25;
-			this.velocityX = -velocityX;
-			this.velocityY = 2;
+			resetBall();
 		}
+	}
+	
+	// Used to reset position of ball after it goes out of bounds
+	public void resetBall()
+	{
+		x = Game.W_WIDTH / 2 - SpriteSheet.PIXEL_SIZE / 2; 
+		y = Game.W_HEIGHT / 2 - SpriteSheet.PIXEL_SIZE / 2; 
+		velocityX = -velocityX;
+		velocityY = 2;
 	}
 
 	public double getY() 
